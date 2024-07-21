@@ -4,9 +4,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$server = "localhost";
-$username = "root";
-$password = "";
+$server = "34.122.201.113:3306";
+$username = "aman";
+$password = "test@123";
 $dbname = "test";
 
 // Create connection
