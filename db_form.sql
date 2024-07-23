@@ -44,7 +44,7 @@ INSERT INTO `loginform2` (`name`, `email`, `phone`, `city`, `Password`, `id`) VA
 ('Aman Singh', 'amansinghsonkh@gmail.com', '8955503853', 'Alwar', '12345678', 1),
 ('Aman Singh', 'zero321605@gmail.com', '+918955503853', 'Alwar', '11111111111', 6),
 ('Aman Singh', 'anuj.tiwari@gmail.com', '8955503853', 'Alwar', '123456789', 10),
-('kapil', 'kapil.sharma@balwaan.com', '6256789970', 'kanpur', 'amalknhf an vdo', 11);
+('kapil', 'kapil.sharma@gmail.com', '6256789970', 'kanpur', 'amalknhf an vdo', 11);
 
 --
 -- Indexes for dumped tables
