@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 
 $server = "10.127.192.3:3306";
 $username = "aman";
-$password = "test@123";
+$password = "Aman@1234";
 $dbname = "test";
 
 // Create connection
