@@ -4,7 +4,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$server = "34.133.139.158:3306";
+$server = "10.127.192.3:3306";
 $username = "aman";
 $password = "test@123";
 $dbname = "test";
