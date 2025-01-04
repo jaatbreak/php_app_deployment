@@ -5,13 +5,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Retrieve database connection details from environment variables
-$server = getenv('DB_HOST') . ':' . getenv('DB_PORT');
+$server = getenv('DB_HOST'); // Should be 'db' as per docker-compose.yml
+$port = getenv('DB_PORT');   // Should be 3306 as per docker-compose.yml
 $username = getenv('DB_USER');
 $password = getenv('DB_PASSWORD');
 $dbname = getenv('DB_NAME');
 
 // Create connection
-$con = mysqli_connect($server, $username, $password, $dbname);
+$con = mysqli_connect($server, $username, $password, $dbname, $port);
 
 // Check connection
 if (!$con) {
