@@ -4,10 +4,11 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$server = "10.127.192.3:3306";
-$username = "aman";
-$password = "Aman@1234";
-$dbname = "test";
+// Retrieve database connection details from environment variables
+$server = getenv('DB_HOST') . ':' . getenv('DB_PORT');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME');
 
 // Create connection
 $con = mysqli_connect($server, $username, $password, $dbname);
@@ -20,8 +21,8 @@ if (!$con) {
 // Retrieve form data
 $name = isset($_POST['name']) ? $_POST['name'] : '';
 $email = isset($_POST['email']) ? $_POST['email'] : '';
-$phone  = isset($_POST['phone']) ? $_POST['phone'] : '';
-$city  = isset($_POST['city']) ? $_POST['city'] : '';
+$phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+$city = isset($_POST['city']) ? $_POST['city'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
 // Validate that required fields are not empty
@@ -31,31 +32,36 @@ if (empty($name) || empty($email) || empty($phone) || empty($city) || empty($pas
 }
 
 // Check for duplicate email
-$check_duplicate_sql = "SELECT * FROM `loginform2` WHERE `email` = '$email'";
-$check_duplicate_result = mysqli_query($con, $check_duplicate_sql);
+$check_duplicate_sql = "SELECT * FROM `loginform2` WHERE `email` = ?";
+$stmt = $con->prepare($check_duplicate_sql);
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if (mysqli_num_rows($check_duplicate_result) > 0) {
+if ($result->num_rows > 0) {
     // Redirect to error page with duplicate data message
     header("Location: error.php?message=" . urlencode("Error occurred: Email already exists."));
     exit();
 }
 
 // Insert data into database
-$sql = "INSERT INTO `loginform2` (`name`, `email`, `phone`, `city`, `password`) VALUES ('$name', '$email', '$phone', '$city', '$password');";
+$insert_sql = "INSERT INTO `loginform2` (`name`, `email`, `phone`, `city`, `password`) VALUES (?, ?, ?, ?, ?)";
+$stmt = $con->prepare($insert_sql);
+$stmt->bind_param('sssss', $name, $email, $phone, $city, $password);
 
-$result = mysqli_query($con, $sql);
-
-if ($result) {
+if ($stmt->execute()) {
     // Redirect to success page
     header("Location: success.php");
     exit();
 } else {
     // Redirect to error page with the MySQL error message
-    header("Location: error.php?message=" . urlencode("Error occurred: " . mysqli_error($con)));
+    header("Location: error.php?message=" . urlencode("Error occurred: " . $stmt->error));
     exit();
 }
 
-// Close connection
-mysqli_close($con);
+// Close statement and connection
+$stmt->close();
+$con->close();
 
 ?>
+

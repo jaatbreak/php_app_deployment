@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  devops_form_web:
+    build:
+      context: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./devops_backup/app_data:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - devops_db
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  devops_db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./devops_backup/db:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d # Mount init scripts
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mydb
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "0.5"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  devops_backup: # Defines a named volume for potential database backups
+
+networks:
+  app-network:
+    driver: bridge
+
