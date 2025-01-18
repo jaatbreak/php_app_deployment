@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: form-application
+  namespace: production-env
+  labels:
+    app: form-application
+spec:
+  replicas: 2  # Set to the number of replicas you want in production
+  selector:
+    matchLabels:
+      app: form-application
+  template:
+    metadata:
+      labels:
+        app: form-application
+    spec:
+      containers:
+      - name: form-application
+        image: amansingh12/form_image:latest  # Replace with your Docker image
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        ports:
+        - containerPort: 80  # Replace with the port your application listens on
+        envFrom:
+        - secretRef:
+            name: form-app-secrets  # Secret containing sensitive info like DB passwords
+        volumeMounts:
+        - name: form-app-storage
+          mountPath: /app/data  # Adjust the path as per your app's requirement
+      volumes:
+      - name: form-app-storage
+        persistentVolumeClaim:
+          claimName: app-pvc 
